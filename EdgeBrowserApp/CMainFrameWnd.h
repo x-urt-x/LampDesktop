@@ -41,6 +41,7 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg LRESULT OnUptadeInnerSize(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT SetWebView(WPARAM wParam, LPARAM lParam);
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	DECLARE_MESSAGE_MAP()
 };
 

@@ -18,6 +18,7 @@ IMPLEMENT_DYNAMIC(CMainFrameWnd, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrameWnd, CFrameWnd)
 	ON_WM_CREATE()
+	ON_WM_ERASEBKGND()
 	ON_WM_SETFOCUS()
 	ON_WM_SIZE()
 	ON_MESSAGE(WM_MESSAGE_EXPAND, &CMainFrameWnd::OnUptadeInnerSize)
@@ -141,3 +142,10 @@ LRESULT CMainFrameWnd::SetWebView(WPARAM wParam, LPARAM lParam)
 	return LRESULT();
 }
 
+BOOL CMainFrameWnd::OnEraseBkgnd(CDC* pDC)
+{
+	CRect rect;
+	GetClientRect(&rect);  // Получаем размеры клиентской области
+	pDC->FillSolidRect(&rect, RGB(250, 250, 250));
+	return CWnd::OnEraseBkgnd(pDC);
+}
