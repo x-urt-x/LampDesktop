@@ -12,7 +12,7 @@ private:
     CButton WebViewBtn;
     CButton UDPConectBtn;
 
-
+    CStringW _url;
 
     void expand();
     void collapse();

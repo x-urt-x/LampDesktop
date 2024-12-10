@@ -138,7 +138,7 @@ LRESULT CMainFrameWnd::OnUptadeInnerSize(WPARAM wParam, LPARAM lParam)
 
 LRESULT CMainFrameWnd::SetWebView(WPARAM wParam, LPARAM lParam)
 {
-	webViewWnd.InitializeWebView(reinterpret_cast<LPWSTR>(lParam));
+	webViewWnd.InitializeWebView(reinterpret_cast<LPCWSTR>(lParam));
 	return LRESULT();
 }
 

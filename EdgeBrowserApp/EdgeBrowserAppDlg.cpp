@@ -102,7 +102,7 @@ void CEdgeBrowserAppDlg::RunAsync(std::function<void()> callback)
     PostMessage(s_runAsyncWindowMessage, reinterpret_cast<WPARAM>(task), 0);
 }
 
-void CEdgeBrowserAppDlg::InitializeWebView(LPWSTR url)
+void CEdgeBrowserAppDlg::InitializeWebView(LPCWSTR url)
 {
     _url = url;
     CloseWebView();

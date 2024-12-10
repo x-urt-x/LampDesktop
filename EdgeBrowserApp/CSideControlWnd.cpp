@@ -42,7 +42,17 @@ void CSideControlWnd::toggleExpand()
 
 void CSideControlWnd::webViewConect()
 {
-	GetParent()->SendMessage(WM_MESSAGE_CONNECT, 0, reinterpret_cast<LPARAM>(L"http://192.168.1.42/"));
+	NC_ADDRESS adr_str;
+	NET_ADDRESS_INFO_ ard_info;
+	adr_str.pAddrInfo = &ard_info;
+	if (FAILED(urlField.GetAddress(&adr_str)))
+	{
+		urlField.DisplayErrorTip();
+		return;
+	}
+	urlField.GetWindowTextW(_url);
+	_url = L"http://" + _url;
+	GetParent()->SendMessage(WM_MESSAGE_CONNECT, 0, reinterpret_cast<LPARAM>(_url.GetString()));
 }
 
 int CSideControlWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)

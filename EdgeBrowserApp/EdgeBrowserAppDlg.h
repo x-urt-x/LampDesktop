@@ -25,7 +25,7 @@ public:
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_EDGEBROWSERAPP_DIALOG };
 #endif
-	void InitializeWebView(LPWSTR url);
+	void InitializeWebView(LPCWSTR url);
 	void CloseWebView(bool cleanupUserDataFolder = false);
 	HRESULT OnCreateEnvironmentCompleted(HRESULT result, ICoreWebView2Environment* environment);
 	HRESULT OnCreateCoreWebView2ControllerCompleted(HRESULT result, ICoreWebView2Controller* controller);
@@ -75,7 +75,7 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	DECLARE_MESSAGE_MAP()
 public:
-	LPWSTR _url;
+	LPCWSTR _url;
 };
 
 template <class ComponentType, class... Args> void CEdgeBrowserAppDlg::NewComponent(Args&&... args)
