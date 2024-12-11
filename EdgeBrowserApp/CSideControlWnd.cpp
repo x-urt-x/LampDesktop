@@ -4,12 +4,14 @@
 #include <vector>
 #include "CConfigD.h"
 #include "CConfigD.h"
+#include "UDPControl.h"
 
 BEGIN_MESSAGE_MAP(CSideControlWnd, CWnd)
 	ON_WM_CREATE()
 	ON_WM_ERASEBKGND()
 	ON_BN_CLICKED(IDD_SIDECONTROL_EXPAND_BTN, &CSideControlWnd::toggleExpand)
 	ON_BN_CLICKED(IDD_SIDECONTROL_WEBVIEW_BTN, &CSideControlWnd::webViewConect)
+	ON_BN_CLICKED(IDD_SIDECONTROL_UDP_CONECT_BTN, &CSideControlWnd::UDPConect)
 	ON_NOTIFY(NM_DBLCLK, IDD_MONITORSLIST, &CSideControlWnd::createCfgDialog)
 END_MESSAGE_MAP()
 
@@ -113,6 +115,21 @@ void CSideControlWnd::webViewConect()
 	UrlField.GetWindowTextW(_url);
 	_url = L"http://" + _url;
 	GetParent()->SendMessage(WM_MESSAGE_CONNECT, 0, reinterpret_cast<LPARAM>(_url.GetString()));
+}
+
+void CSideControlWnd::UDPConect()
+{
+	NC_ADDRESS adr_str;
+	NET_ADDRESS_INFO_ ard_info;
+	adr_str.pAddrInfo = &ard_info;
+	if (FAILED(UrlField.GetAddress(&adr_str)))
+	{
+		UrlField.DisplayErrorTip();
+		return;
+	}
+	UrlField.GetWindowTextW(_url);
+	_updControl.Stop();
+	_updControl.Start(_monitorsCfg, _url);
 }
 
 int CSideControlWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)

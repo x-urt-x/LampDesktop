@@ -276,6 +276,7 @@
   <ItemGroup>
     <ClInclude Include="CConfigD.h" />
     <ClInclude Include="CMainFrameWnd.h" />
+    <ClInclude Include="ColorProcess.h" />
     <ClInclude Include="ComponentBase.h" />
     <ClInclude Include="CSideControlWnd.h" />
     <ClInclude Include="EdgeBrowserApp.h" />
@@ -284,16 +285,20 @@
     <ClInclude Include="MonitorCfg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StructColor.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UDPControl.h" />
     <ClInclude Include="ViewComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CConfigD.cpp" />
     <ClCompile Include="CMainFrameWnd.cpp" />
+    <ClCompile Include="ColorProcess.cpp" />
     <ClCompile Include="CSideControlWnd.cpp" />
     <ClCompile Include="EdgeBrowserApp.cpp" />
     <ClCompile Include="EdgeBrowserAppDlg.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="UDPControl.cpp" />
     <ClCompile Include="ViewComponent.cpp" />
   </ItemGroup>
   <ItemGroup>

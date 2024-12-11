@@ -4,6 +4,7 @@
 #include <vector>
 #include <Wbemidl.h>
 #include "MonitorCfg.h"
+#include "UDPControl.h"
 #pragma comment(lib, "wbemuuid.lib")
 
 
@@ -25,6 +26,8 @@ private:
     bool GetMonitorsInfo();
     std::vector<MonitorCfg> _monitorsCfg;
 
+    UDPControl _updControl;
+
     void expand();
     void collapse();
     CStringW _url;
@@ -37,6 +40,7 @@ public:
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     afx_msg void toggleExpand();
     afx_msg void webViewConect();
+    afx_msg void UDPConect();
     afx_msg void createCfgDialog(NMHDR* pNotifyStruct, LRESULT* result);
 };
 
