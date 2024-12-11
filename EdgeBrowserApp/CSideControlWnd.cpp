@@ -2,6 +2,8 @@
 #include "CSideControlWnd.h"
 #include "Resource.h"
 #include <vector>
+#include "CConfigD.h"
+#include "CConfigD.h"
 
 BEGIN_MESSAGE_MAP(CSideControlWnd, CWnd)
 	ON_WM_CREATE()
@@ -65,11 +67,11 @@ bool CSideControlWnd::GetMonitorsInfo()
 			res = DisplayConfigGetDeviceInfo(&name.header);
 			if (ERROR_SUCCESS == res)
 				cfg.name = CString(name.monitorFriendlyDeviceName);
-			_displayConfigs.emplace_back(cfg);
+			_monitorsCfg.emplace_back(cfg);
 		}
 	}
 
-	return _displayConfigs.size() > 0;
+	return _monitorsCfg.size() > 0;
 }
 
 
@@ -131,7 +133,7 @@ int CSideControlWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (!GetMonitorsInfo())
 		return -1;
 	MonitorsList.InsertColumn(0, _T(""), LVCFMT_LEFT, 175);
-	for (auto cfg : _displayConfigs)
+	for (auto cfg : _monitorsCfg)
 		MonitorsList.InsertItem(99, (cfg.name + ' ' + cfg.res));
 	CRect rect;
 	MonitorsList.GetItemRect(0, &rect, LVIR_BOUNDS);
@@ -151,8 +153,8 @@ void CSideControlWnd::createCfgDialog(NMHDR* pNotifyStruct, LRESULT* result)
 
 	if (pNMItemActivate->iItem != -1) {
 		int itemIndex = pNMItemActivate->iItem;
-		//MonitorConfigDial mcd;
-		//mcd.DoModal();
+		CConfigD cfgD(&_monitorsCfg[itemIndex]);
+		cfgD.DoModal();
 	}
 	return;
 }

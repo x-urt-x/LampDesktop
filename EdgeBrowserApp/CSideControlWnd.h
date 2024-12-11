@@ -3,17 +3,8 @@
 #include <string>
 #include <vector>
 #include <Wbemidl.h>
+#include "MonitorCfg.h"
 #pragma comment(lib, "wbemuuid.lib")
-
-struct MonitorCfg
-{
-    MonitorCfg() = default;
-
-    CString name;
-    CString res;
-    bool isActive;
-    UINT8 br;
-};
 
 
 class CSideControlWnd : public CWnd
@@ -32,7 +23,7 @@ private:
 
 
     bool GetMonitorsInfo();
-    std::vector<MonitorCfg> _displayConfigs;
+    std::vector<MonitorCfg> _monitorsCfg;
 
     void expand();
     void collapse();
