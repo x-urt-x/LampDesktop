@@ -1,5 +1,10 @@
 #pragma once
 #include "framework.h"
+#include <string>
+#include <vector>
+#include <Wbemidl.h>
+#pragma comment(lib, "wbemuuid.lib")
+
 class CSideControlWnd : public CWnd
 {
 public:
@@ -8,14 +13,18 @@ public:
 private:
     CButton ExpandBtn;
 
-    CNetAddressCtrl urlField;
+    CNetAddressCtrl UrlField;
     CButton WebViewBtn;
     CButton UDPConectBtn;
 
-    CStringW _url;
+    CListCtrl MonitorsList;
+
+
+    bool GetMonitorsInfo(std::vector<CString>& displayConfigs);
 
     void expand();
     void collapse();
+    CStringW _url;
     int _expandedWidth;
     int _collapsedWidth;
     bool _isExpanded;
