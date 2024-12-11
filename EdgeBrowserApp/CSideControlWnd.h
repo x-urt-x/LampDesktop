@@ -5,6 +5,17 @@
 #include <Wbemidl.h>
 #pragma comment(lib, "wbemuuid.lib")
 
+struct MonitorCfg
+{
+    MonitorCfg() = default;
+
+    CString name;
+    CString res;
+    bool isActive;
+    UINT8 br;
+};
+
+
 class CSideControlWnd : public CWnd
 {
 public:
@@ -20,7 +31,8 @@ private:
     CListCtrl MonitorsList;
 
 
-    bool GetMonitorsInfo(std::vector<CString>& displayConfigs);
+    bool GetMonitorsInfo();
+    std::vector<MonitorCfg> _displayConfigs;
 
     void expand();
     void collapse();
@@ -34,5 +46,6 @@ public:
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     afx_msg void toggleExpand();
     afx_msg void webViewConect();
+    afx_msg void createCfgDialog(NMHDR* pNotifyStruct, LRESULT* result);
 };
 

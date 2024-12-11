@@ -8,6 +8,7 @@ BEGIN_MESSAGE_MAP(CSideControlWnd, CWnd)
 	ON_WM_ERASEBKGND()
 	ON_BN_CLICKED(IDD_SIDECONTROL_EXPAND_BTN, &CSideControlWnd::toggleExpand)
 	ON_BN_CLICKED(IDD_SIDECONTROL_WEBVIEW_BTN, &CSideControlWnd::webViewConect)
+	ON_NOTIFY(NM_DBLCLK, IDD_MONITORSLIST, &CSideControlWnd::createCfgDialog)
 END_MESSAGE_MAP()
 
 
@@ -16,7 +17,7 @@ int CSideControlWnd::getWidth() const
 	return _isExpanded ? _expandedWidth : _collapsedWidth;
 }
 
-bool CSideControlWnd::GetMonitorsInfo(std::vector<CString>& displayConfigs)
+bool CSideControlWnd::GetMonitorsInfo()
 {
 	UINT32 num_paths;
 	UINT32 num_modes;
@@ -51,11 +52,11 @@ bool CSideControlWnd::GetMonitorsInfo(std::vector<CString>& displayConfigs)
 			{DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME, sizeof(source), path.sourceInfo.adapterId, path.sourceInfo.id}, {},
 		};
 		if (DisplayConfigGetDeviceInfo(&source.header) == ERROR_SUCCESS) {
-			CString dc;
+			MonitorCfg cfg;
 			if (path.sourceInfo.modeInfoIdx != DISPLAYCONFIG_PATH_MODE_IDX_INVALID) {
 				const auto& mode = modes[path.sourceInfo.modeInfoIdx];
 				if (mode.infoType == DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE)
-					dc.Format(_T("%ux%u"), mode.sourceMode.width, mode.sourceMode.height);
+					cfg.res.Format(_T("%ux%u"), mode.sourceMode.width, mode.sourceMode.height);
 			}
 
 			DISPLAYCONFIG_TARGET_DEVICE_NAME name = {
@@ -63,13 +64,14 @@ bool CSideControlWnd::GetMonitorsInfo(std::vector<CString>& displayConfigs)
 			};
 			res = DisplayConfigGetDeviceInfo(&name.header);
 			if (ERROR_SUCCESS == res)
-				dc = CString(name.monitorFriendlyDeviceName) + ' ' + dc;
-			displayConfigs.emplace_back(dc);
+				cfg.name = CString(name.monitorFriendlyDeviceName);
+			_displayConfigs.emplace_back(cfg);
 		}
 	}
 
-	return displayConfigs.size() > 0;
+	return _displayConfigs.size() > 0;
 }
+
 
 void CSideControlWnd::expand()
 {
@@ -123,16 +125,14 @@ int CSideControlWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		CRect(PS_PP(0, 5, 20, 20)), this, IDD_SIDECONTROL_EXPAND_BTN);
 	UrlField.Create(WS_VISIBLE,
 		CRect(PS_PP(25, 5, 200, 20)), this, IDD_URLFIELD);
-	MonitorsList.CreateEx(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES, WS_VISIBLE | LVS_REPORT | LVS_NOCOLUMNHEADER ,
+	MonitorsList.Create(WS_VISIBLE | LVS_REPORT | LVS_NOCOLUMNHEADER,
 		CRect(PS_PP(25, 90, 200, 10)), this, IDD_MONITORSLIST);
-	MonitorsList.SetExtendedStyle(MonitorsList.GetExtendedStyle() | LVS_EX_CHECKBOXES);
 
-	std::vector<CString> monitors;
-	if (!GetMonitorsInfo(monitors))
+	if (!GetMonitorsInfo())
 		return -1;
 	MonitorsList.InsertColumn(0, _T(""), LVCFMT_LEFT, 175);
-	for (auto str : monitors)
-		MonitorsList.InsertItem(99, str);
+	for (auto cfg : _displayConfigs)
+		MonitorsList.InsertItem(99, (cfg.name + ' ' + cfg.res));
 	CRect rect;
 	MonitorsList.GetItemRect(0, &rect, LVIR_BOUNDS);
 	CRect windowRect;
@@ -140,9 +140,21 @@ int CSideControlWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	MonitorsList.GetParent()->ScreenToClient(&windowRect);
 	MonitorsList.SetWindowPos(NULL, windowRect.left, windowRect.top, windowRect.Width(), rect.Height() * MonitorsList.GetItemCount() + 5, SWP_NOZORDER | SWP_NOMOVE);
 
+
 	// TODO:  Добавьте специализированный код создания
 	expand();
 	return 0;
+}
+void CSideControlWnd::createCfgDialog(NMHDR* pNotifyStruct, LRESULT* result)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNotifyStruct);
+
+	if (pNMItemActivate->iItem != -1) {
+		int itemIndex = pNMItemActivate->iItem;
+		//MonitorConfigDial mcd;
+		//mcd.DoModal();
+	}
+	return;
 }
 
 BOOL CSideControlWnd::OnEraseBkgnd(CDC* pDC)
