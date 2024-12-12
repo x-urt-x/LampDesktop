@@ -285,7 +285,6 @@
     <ClInclude Include="MonitorCfg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="StructColor.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UDPControl.h" />
     <ClInclude Include="ViewComponent.h" />
