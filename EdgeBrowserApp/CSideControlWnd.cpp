@@ -15,6 +15,7 @@ BEGIN_MESSAGE_MAP(CSideControlWnd, CWnd)
 	ON_BN_CLICKED(IDD_IDD_SIDECONTROL_UDP_CLOSE_BTN, &CSideControlWnd::UDPClose)
 	ON_NOTIFY(NM_DBLCLK, IDD_MONITORSLIST, &CSideControlWnd::createCfgDialog)
 	ON_MESSAGE(WM_SET_BUTTON_COLOR, &CSideControlWnd::OnSetButtonColor)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -220,4 +221,11 @@ LRESULT CSideControlWnd::OnSetButtonColor(WPARAM wParam, LPARAM lParam)
 	}
 
 	return 0;
+}
+
+void CSideControlWnd::OnClose()
+{
+	// TODO: добавьте свой код обработчика сообщений или вызов стандартного
+
+	CWnd::OnClose();
 }

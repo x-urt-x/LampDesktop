@@ -72,6 +72,7 @@ void UDPControl::Stop()
 	_cfgs.clear();
 	if (_lastUpdates)
 		delete _lastUpdates;
+	_lastUpdates = nullptr;
 
 	closesocket(out);
 	WSACleanup();
