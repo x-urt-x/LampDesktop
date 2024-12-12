@@ -10,8 +10,9 @@ UDPControl::~UDPControl()
 	Stop();
 }
 
-void UDPControl::Start(std::vector<MonitorCfg>& cfg, CString ip)
+void UDPControl::Start(HWND hWndMain, std::vector<MonitorCfg>& cfg, CString ip)
 {
+	_hWndMain = hWndMain;
 	for (int i = 0; i < cfg.size(); i++)
 	{
 		if (cfg[i].getIsActive())
@@ -80,12 +81,6 @@ void UDPControl::Process()
 		{
 			UINT color[3];
 			ZeroMemory(color, 3 * sizeof(UINT));
-			for (auto colorProc : _colorProcesses)
-			{
-				color[0] += colorProc->_color[0];
-				color[1] += colorProc->_color[1];
-				color[2] += colorProc->_color[2];
-			}
 			for (int i = 0; i < _colorProcesses.size(); i++)
 			{
 				float br = 255.0 / _cfgs[i]->getBr();
@@ -96,13 +91,13 @@ void UDPControl::Process()
 			color[0] /= _colorProcesses.size();
 			color[1] /= _colorProcesses.size();
 			color[2] /= _colorProcesses.size();
+			PostMessage(_hWndMain, WM_SET_BUTTON_COLOR, 0, (LPARAM)color);
 		}
 		std::chrono::nanoseconds time;
 		time = now - _lastUpdates[0];
 		for (UINT i = 0; i < _colorProcesses.size(); i++)
-			if (time > now - _lastUpdates[i])
+			if (time > now - _lastUpdates[i] && now != _lastUpdates[i])
 				time = now - _lastUpdates[i];
-
 		std::this_thread::sleep_for(time);
 	}
 	_stopFlag = false;

@@ -14,7 +14,7 @@ class UDPControl
 public:
 	UDPControl();
 	~UDPControl();
-	void Start(std::vector<MonitorCfg>& cfg, CString ip);
+	void Start(HWND hWndMain, std::vector<MonitorCfg>& cfg, CString ip);
 	void Stop();
 private:
 	void Process();
@@ -22,5 +22,6 @@ private:
 	std::vector<ColorProcess*> _colorProcesses;
 	bool _stopFlag;
 	TPoint* _lastUpdates = nullptr;
+	HWND _hWndMain;
 };
 

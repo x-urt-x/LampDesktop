@@ -3,6 +3,7 @@
 #define PS_PP(L,T,W,H) (L),(T),(L+W),(T+H)
 #define WM_MESSAGE_EXPAND (WM_APP + 1)
 #define WM_MESSAGE_CONNECT (WM_APP + 2)
+#define WM_SET_BUTTON_COLOR (WM_APP + 3)
 
 #ifndef VC_EXTRALEAN
 #define VC_EXTRALEAN            // Exclude rarely-used stuff from Windows headers

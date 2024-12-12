@@ -13,6 +13,7 @@ BEGIN_MESSAGE_MAP(CSideControlWnd, CWnd)
 	ON_BN_CLICKED(IDD_SIDECONTROL_WEBVIEW_BTN, &CSideControlWnd::webViewConect)
 	ON_BN_CLICKED(IDD_SIDECONTROL_UDP_CONECT_BTN, &CSideControlWnd::UDPConect)
 	ON_NOTIFY(NM_DBLCLK, IDD_MONITORSLIST, &CSideControlWnd::createCfgDialog)
+	ON_MESSAGE(WM_SET_BUTTON_COLOR, &CSideControlWnd::OnSetButtonColor)
 END_MESSAGE_MAP()
 
 
@@ -135,7 +136,7 @@ void CSideControlWnd::UDPConect()
 	}
 	UrlField.GetWindowTextW(_url);
 	_updControl.Stop();
-	_updControl.Start(_monitorsCfg, _url);
+	_updControl.Start(this->GetSafeHwnd(), _monitorsCfg, _url);
 }
 
 int CSideControlWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -146,6 +147,7 @@ int CSideControlWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		CRect(PS_PP(25, 30, 90, 50)), this, IDD_SIDECONTROL_WEBVIEW_BTN);
 	UDPConectBtn.Create(L"Start UDP", WS_VISIBLE | WS_CHILD | BS_PUSHLIKE | BS_TEXT,
 		CRect(PS_PP(135, 30, 90, 50)), this, IDD_SIDECONTROL_UDP_CONECT_BTN);
+	UDPConectBtn.EnableWindowsTheming(FALSE);
 	ExpandBtn.Create(L"", WS_VISIBLE | WS_CHILD | BS_PUSHLIKE | BS_TEXT,
 		CRect(PS_PP(0, 5, 20, 20)), this, IDD_SIDECONTROL_EXPAND_BTN);
 	UrlField.Create(WS_VISIBLE,
@@ -156,9 +158,9 @@ int CSideControlWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (!GetMonitorsInfo())
 		return -1;
 	MonitorsList.InsertColumn(0, _T(""), LVCFMT_LEFT, 175);
-	for (UINT i	= 0; i < _monitorsCfg.size(); i++)
+	for (UINT i = 0; i < _monitorsCfg.size(); i++)
 		MonitorsList.InsertItem(99, (_monitorsCfg[i].getName() + ' ' + _monitorsCfg[i].getRes()));
-		
+
 	CRect rect;
 	MonitorsList.GetItemRect(0, &rect, LVIR_BOUNDS);
 	CRect windowRect;
@@ -189,4 +191,17 @@ BOOL CSideControlWnd::OnEraseBkgnd(CDC* pDC)
 	GetClientRect(&rect);  // Получаем размеры клиентской области
 	pDC->FillSolidRect(&rect, RGB(180, 180, 180));
 	return CWnd::OnEraseBkgnd(pDC);
+}
+
+LRESULT CSideControlWnd::OnSetButtonColor(WPARAM wParam, LPARAM lParam)
+{
+	UINT* color = reinterpret_cast<UINT*>(lParam);
+
+	if (color != nullptr)
+	{
+		UDPConectBtn.SetFaceColor(RGB(color[0], color[1], color[2]));
+		UDPConectBtn.Invalidate();
+	}
+
+	return 0;
 }
