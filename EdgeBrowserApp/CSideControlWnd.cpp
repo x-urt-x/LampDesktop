@@ -12,6 +12,7 @@ BEGIN_MESSAGE_MAP(CSideControlWnd, CWnd)
 	ON_BN_CLICKED(IDD_SIDECONTROL_EXPAND_BTN, &CSideControlWnd::toggleExpand)
 	ON_BN_CLICKED(IDD_SIDECONTROL_WEBVIEW_BTN, &CSideControlWnd::webViewConect)
 	ON_BN_CLICKED(IDD_SIDECONTROL_UDP_CONECT_BTN, &CSideControlWnd::UDPConect)
+	ON_BN_CLICKED(IDD_IDD_SIDECONTROL_UDP_CLOSE_BTN, &CSideControlWnd::UDPClose)
 	ON_NOTIFY(NM_DBLCLK, IDD_MONITORSLIST, &CSideControlWnd::createCfgDialog)
 	ON_MESSAGE(WM_SET_BUTTON_COLOR, &CSideControlWnd::OnSetButtonColor)
 END_MESSAGE_MAP()
@@ -139,21 +140,31 @@ void CSideControlWnd::UDPConect()
 	_updControl.Start(this->GetSafeHwnd(), _monitorsCfg, _url);
 }
 
+void CSideControlWnd::UDPClose()
+{
+	_updControl.Stop();
+	UDPConectBtn.SetFaceColor((COLORREF)-1, true);
+	UDPConectBtn.Invalidate();
+}
+
 int CSideControlWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	WebViewBtn.Create(L"Start Web", WS_VISIBLE | WS_CHILD | BS_PUSHLIKE | BS_TEXT,
-		CRect(PS_PP(25, 30, 90, 50)), this, IDD_SIDECONTROL_WEBVIEW_BTN);
-	UDPConectBtn.Create(L"Start UDP", WS_VISIBLE | WS_CHILD | BS_PUSHLIKE | BS_TEXT,
-		CRect(PS_PP(135, 30, 90, 50)), this, IDD_SIDECONTROL_UDP_CONECT_BTN);
-	UDPConectBtn.EnableWindowsTheming(FALSE);
 	ExpandBtn.Create(L"", WS_VISIBLE | WS_CHILD | BS_PUSHLIKE | BS_TEXT,
 		CRect(PS_PP(0, 5, 20, 20)), this, IDD_SIDECONTROL_EXPAND_BTN);
+	WebViewBtn.Create(L"Start Web", WS_VISIBLE | WS_CHILD | BS_PUSHLIKE | BS_TEXT,
+		CRect(PS_PP(25, 30, 90, 60)), this, IDD_SIDECONTROL_WEBVIEW_BTN);
+	UDPConectBtn.Create(L"Start UDP", WS_VISIBLE | WS_CHILD | BS_PUSHLIKE | BS_TEXT,
+		CRect(PS_PP(135, 30, 90, 29)), this, IDD_SIDECONTROL_UDP_CONECT_BTN);
+	UDPConectBtn.EnableWindowsTheming(FALSE);
+	UDPCloseBtn.Create(L"Close UDP", WS_VISIBLE | WS_CHILD | BS_PUSHLIKE | BS_TEXT,
+		CRect(PS_PP(135, 61, 90, 29)), this, IDD_IDD_SIDECONTROL_UDP_CLOSE_BTN);
+	UDPCloseBtn.EnableWindowsTheming(FALSE);
 	UrlField.Create(WS_VISIBLE,
 		CRect(PS_PP(25, 5, 200, 20)), this, IDD_URLFIELD);
 	MonitorsList.Create(WS_VISIBLE | LVS_REPORT | LVS_NOCOLUMNHEADER,
-		CRect(PS_PP(25, 90, 200, 10)), this, IDD_MONITORSLIST);
+		CRect(PS_PP(25, 95, 200, 10)), this, IDD_MONITORSLIST);
 
 	if (!GetMonitorsInfo())
 		return -1;

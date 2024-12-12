@@ -19,6 +19,7 @@ private:
     CNetAddressCtrl UrlField;
     CMFCButton WebViewBtn;
     CMFCButton UDPConectBtn;
+    CMFCButton UDPCloseBtn;
     COLORREF UDPConectColor;
 
     CListCtrl MonitorsList;
@@ -43,6 +44,7 @@ public:
     afx_msg void toggleExpand();
     afx_msg void webViewConect();
     afx_msg void UDPConect();
+    afx_msg void UDPClose();
     afx_msg void createCfgDialog(NMHDR* pNotifyStruct, LRESULT* result);
     afx_msg LRESULT OnSetButtonColor(WPARAM wParam, LPARAM lParam);
 };

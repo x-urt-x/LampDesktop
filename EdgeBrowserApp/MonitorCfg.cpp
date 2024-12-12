@@ -1,6 +1,6 @@
 #include "MonitorCfg.h"
 
-MonitorCfg::MonitorCfg() : name(L"undef"), res(L"undef"), isActive(false), br(255), rate(10), id(0), delay(100), contrast(50)
+MonitorCfg::MonitorCfg() : name(L"undef"), res(L"undef"), isActive(false), br(255), rate(10), id(0), delay(100), contrast(25)
 {
 }
 

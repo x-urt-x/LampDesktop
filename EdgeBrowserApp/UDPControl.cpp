@@ -1,5 +1,5 @@
 #include "UDPControl.h"
-
+#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
 UDPControl::UDPControl() : _stopFlag(true)
 {
 
@@ -141,6 +141,7 @@ inline void UDPControl::EnhanceContrast(BYTE* color, float factor)
 	for (int i = 0; i < 3; i++)
 	{
 		float newValue = avgBrightness + (color[i] - avgBrightness) * factor;
-		color[i] = (BYTE)newValue;
+		color[i] = constrain(static_cast<int>(newValue), 0, 255);
+
 	}
 }

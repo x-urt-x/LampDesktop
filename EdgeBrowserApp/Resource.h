@@ -23,6 +23,7 @@
 #define IDD_RATE                        1002
 #define IDC_EDIT1                       1003
 #define IDD_CONTRAST                    1003
+#define IDD_IDD_SIDECONTROL_UDP_CLOSE_BTN 205
 
 // Next default values for new objects
 // 
