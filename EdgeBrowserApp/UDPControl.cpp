@@ -12,24 +12,32 @@ UDPControl::~UDPControl()
 
 void UDPControl::Start(std::vector<MonitorCfg>& cfg, CString ip)
 {
+	for (int i = 0; i < cfg.size(); i++)
+	{
+		if (cfg[i].getIsActive())
+		{
+			_cfgs.push_back(&cfg[i]);
+		}
+	}
+
+	if (!_cfgs.size())
+		return;
+
 	_stopFlag = false;
 
-	for (UINT i = 0; i < cfg.size(); i++)
+	for (UINT i = 0; i < _cfgs.size(); i++)
 	{
-		auto colorProc = new ColorProcess(i, cfg[i].rate);
+		auto colorProc = new ColorProcess(_cfgs[i]->getId());
 		colorProc->Initialize();
 		_colorProcesses.push_back(colorProc);
 	}
 	_lastUpdates = new TPoint[_colorProcesses.size()];
-	_delays = new TMs[_colorProcesses.size()];
 	for (UINT i = 0; i < _colorProcesses.size(); i++)
 	{
 		_lastUpdates[i] = TNow;
-		_delays[i] = TMs(1000 / cfg[i].rate);
 	}
 	std::thread proc(&UDPControl::Process, this);
 	proc.detach();
-	return;
 }
 
 void UDPControl::Stop()
@@ -46,10 +54,9 @@ void UDPControl::Stop()
 			delete colorProc;
 		_colorProcesses.clear();
 	}
+	_cfgs.clear();
 	if (_lastUpdates)
 		delete _lastUpdates;
-	if (_delays)
-		delete _delays;
 }
 
 void UDPControl::Process()
@@ -60,7 +67,7 @@ void UDPControl::Process()
 		bool update = false;
 		for (UINT i = 0; i < _colorProcesses.size(); i++)
 		{
-			if (now - _lastUpdates[i] > _delays[i] - TMs(2))
+			if (now - _lastUpdates[i] > _cfgs[i]->getDelay() - TMs(2))
 			{
 				if (_colorProcesses[i]->GetColor())
 				{
@@ -78,6 +85,13 @@ void UDPControl::Process()
 				color[0] += colorProc->_color[0];
 				color[1] += colorProc->_color[1];
 				color[2] += colorProc->_color[2];
+			}
+			for (int i = 0; i < _colorProcesses.size(); i++)
+			{
+				float br = 255.0 / _cfgs[i]->getBr();
+				color[0] += _colorProcesses[i]->_color[0] * br;
+				color[1] += _colorProcesses[i]->_color[1] * br;
+				color[2] += _colorProcesses[i]->_color[2] * br;
 			}
 			color[0] /= _colorProcesses.size();
 			color[1] /= _colorProcesses.size();

@@ -1,18 +1,36 @@
 #include "framework.h"
+#include <mutex>
 #pragma once
 struct MonitorCfg
 {
+public:
+	MonitorCfg();
+	bool operator==(const MonitorCfg& other) const;
+	void set(MonitorCfg& cfg);
 
+    CString getName() const;
+    CString getRes() const;
+    bool getIsActive() const;
+    UINT8 getBr() const;
+    UINT16 getRate() const;
+    UINT getId() const;
+	std::chrono::milliseconds getDelay() const;
+
+    void setName(const CString& newName);
+    void setRes(const CString& newRes);
+    void setIsActive(bool newIsActive);
+    void setBr(UINT8 newBr);
+    void setRate(UINT16 newRate);
+    void setId(UINT newId);
+
+private:
 	CString name;
 	CString res;
 	bool isActive;
 	UINT8 br;
 	UINT16 rate;
+	UINT id;
+	std::chrono::milliseconds delay;
 
-	bool operator==(const MonitorCfg& other) const
-	{
-		return name == other.name && res == other.res && isActive == other.isActive && br == other.br;
-	}
-
-	MonitorCfg() : name(L"undef"), res(L"undef"), isActive(false), br(255), rate(10) {}
+	//std::unique_ptr<std::mutex> mtx;
 };

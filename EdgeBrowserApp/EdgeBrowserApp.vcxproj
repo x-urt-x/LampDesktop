@@ -296,6 +296,7 @@
     <ClCompile Include="CSideControlWnd.cpp" />
     <ClCompile Include="EdgeBrowserApp.cpp" />
     <ClCompile Include="EdgeBrowserAppDlg.cpp" />
+    <ClCompile Include="MonitorCfg.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="UDPControl.cpp" />
     <ClCompile Include="ViewComponent.cpp" />

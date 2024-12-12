@@ -12,7 +12,9 @@ IMPLEMENT_DYNAMIC(CConfigD, CDialogEx)
 
 CConfigD::CConfigD(MonitorCfg* cfg, CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_ConfigD, pParent), _cfg(cfg)
-{}
+{
+
+}
 
 CConfigD::~CConfigD()
 {}
@@ -38,15 +40,15 @@ BOOL CConfigD::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	_isActive.SetCheck(_cfg->isActive);
+	_isActive.SetCheck(_cfg->getIsActive());
 
 	CString rate;
-	rate.Format(L"%u", _cfg->rate);
+	rate.Format(L"%u", _cfg->getRate());
 	_rate.ModifyStyle(0, ES_NUMBER);
 	_rate.SetWindowTextW(rate);
 
 	CString br;
-	br.Format(L"%u", _cfg->br);
+	br.Format(L"%u", _cfg->getBr());
 	_br.ModifyStyle(0, ES_NUMBER);
 	_br.SetWindowTextW(br);
 
@@ -56,9 +58,9 @@ BOOL CConfigD::OnInitDialog()
 
 void CConfigD::OnBnClickedOk()
 {
-	_cfg->br = GetDlgItemInt(IDD_BR);
-	_cfg->rate = GetDlgItemInt(IDD_RATE);
-	_cfg->isActive = GetDlgItemInt(IDD_ENABLE);
+	_cfg->setBr(GetDlgItemInt(IDD_BR));
+	_cfg->setRate(GetDlgItemInt(IDD_RATE));
+	_cfg->setIsActive(IsDlgButtonChecked(IDD_ENABLE));
 
 	CDialogEx::OnOK();
 }

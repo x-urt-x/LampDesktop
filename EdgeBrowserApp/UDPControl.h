@@ -18,9 +18,9 @@ public:
 	void Stop();
 private:
 	void Process();
+	std::vector<MonitorCfg*> _cfgs;
 	std::vector<ColorProcess*> _colorProcesses;
 	bool _stopFlag;
 	TPoint* _lastUpdates = nullptr;
-	TMs* _delays = nullptr;
 };
 

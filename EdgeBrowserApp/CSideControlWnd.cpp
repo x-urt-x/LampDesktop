@@ -50,25 +50,31 @@ bool CSideControlWnd::GetMonitorsInfo()
 	modes.resize(num_modes);
 
 
-	for (const auto& path : paths) {
+	for (int i = 0; i < paths.size(); i++)
+	{
 		// Send a GET_SOURCE_NAME request
 		DISPLAYCONFIG_SOURCE_DEVICE_NAME source = {
-			{DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME, sizeof(source), path.sourceInfo.adapterId, path.sourceInfo.id}, {},
+			{DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME, sizeof(source), paths[i].sourceInfo.adapterId, paths[i].sourceInfo.id}, {},
 		};
 		if (DisplayConfigGetDeviceInfo(&source.header) == ERROR_SUCCESS) {
 			MonitorCfg cfg;
-			if (path.sourceInfo.modeInfoIdx != DISPLAYCONFIG_PATH_MODE_IDX_INVALID) {
-				const auto& mode = modes[path.sourceInfo.modeInfoIdx];
+			cfg.setId(i);
+			if (paths[i].sourceInfo.modeInfoIdx != DISPLAYCONFIG_PATH_MODE_IDX_INVALID) {
+				const auto& mode = modes[paths[i].sourceInfo.modeInfoIdx];
 				if (mode.infoType == DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE)
-					cfg.res.Format(_T("%ux%u"), mode.sourceMode.width, mode.sourceMode.height);
+				{
+					CString str;
+					str.Format(_T("%ux%u"), mode.sourceMode.width, mode.sourceMode.height);
+					cfg.setRes(str);
+				}
 			}
 
 			DISPLAYCONFIG_TARGET_DEVICE_NAME name = {
-				{DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME, sizeof(name), path.sourceInfo.adapterId, path.targetInfo.id}, {},
+				{DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME, sizeof(name), paths[i].sourceInfo.adapterId, paths[i].targetInfo.id}, {},
 			};
 			res = DisplayConfigGetDeviceInfo(&name.header);
 			if (ERROR_SUCCESS == res)
-				cfg.name = CString(name.monitorFriendlyDeviceName);
+				cfg.setName(CString(name.monitorFriendlyDeviceName));
 			_monitorsCfg.emplace_back(cfg);
 		}
 	}
@@ -150,8 +156,9 @@ int CSideControlWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (!GetMonitorsInfo())
 		return -1;
 	MonitorsList.InsertColumn(0, _T(""), LVCFMT_LEFT, 175);
-	for (auto cfg : _monitorsCfg)
-		MonitorsList.InsertItem(99, (cfg.name + ' ' + cfg.res));
+	for (UINT i	= 0; i < _monitorsCfg.size(); i++)
+		MonitorsList.InsertItem(99, (_monitorsCfg[i].getName() + ' ' + _monitorsCfg[i].getRes()));
+		
 	CRect rect;
 	MonitorsList.GetItemRect(0, &rect, LVIR_BOUNDS);
 	CRect windowRect;
