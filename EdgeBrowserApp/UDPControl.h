@@ -23,5 +23,8 @@ private:
 	bool _stopFlag;
 	TPoint* _lastUpdates = nullptr;
 	HWND _hWndMain;
+
+	sockaddr_in server;
+	SOCKET out;
 };
 

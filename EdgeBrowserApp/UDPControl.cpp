@@ -12,6 +12,20 @@ UDPControl::~UDPControl()
 
 void UDPControl::Start(HWND hWndMain, std::vector<MonitorCfg>& cfg, CString ip)
 {
+	WSADATA data;
+	WORD version = MAKEWORD(2, 2);
+
+	// Start WinSock
+	int wsOk = WSAStartup(version, &data);
+	if (wsOk != 0)
+		return;
+
+	server.sin_family = AF_INET;
+	server.sin_port = htons(8888);
+	inet_pton(AF_INET, CStringA(ip).GetString(), &server.sin_addr);
+	out = socket(AF_INET, SOCK_DGRAM, 0);
+
+
 	_hWndMain = hWndMain;
 	for (int i = 0; i < cfg.size(); i++)
 	{
@@ -58,6 +72,9 @@ void UDPControl::Stop()
 	_cfgs.clear();
 	if (_lastUpdates)
 		delete _lastUpdates;
+
+	closesocket(out);
+	WSACleanup();
 }
 
 void UDPControl::Process()
@@ -79,7 +96,7 @@ void UDPControl::Process()
 		}
 		if (update)
 		{
-			UINT color[3];
+			UINT32 color[3];
 			ZeroMemory(color, 3 * sizeof(UINT));
 			for (int i = 0; i < _colorProcesses.size(); i++)
 			{
@@ -88,10 +105,13 @@ void UDPControl::Process()
 				color[1] += _colorProcesses[i]->_color[1] * br;
 				color[2] += _colorProcesses[i]->_color[2] * br;
 			}
-			color[0] /= _colorProcesses.size();
-			color[1] /= _colorProcesses.size();
-			color[2] /= _colorProcesses.size();
-			PostMessage(_hWndMain, WM_SET_BUTTON_COLOR, 0, (LPARAM)color);
+			BYTE colorToSend[3];
+			colorToSend[0] = color[0] / _colorProcesses.size();
+			colorToSend[1] = color[1] / _colorProcesses.size();
+			colorToSend[2] = color[2] / _colorProcesses.size();
+
+			PostMessage(_hWndMain, WM_SET_BUTTON_COLOR, 0, (LPARAM)colorToSend);
+			sendto(out, reinterpret_cast<char*>(colorToSend), 3, 0, (sockaddr*)&server, sizeof(server));
 		}
 		std::chrono::nanoseconds time;
 		time = now - _lastUpdates[0];

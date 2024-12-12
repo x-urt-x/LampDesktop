@@ -195,7 +195,7 @@ BOOL CSideControlWnd::OnEraseBkgnd(CDC* pDC)
 
 LRESULT CSideControlWnd::OnSetButtonColor(WPARAM wParam, LPARAM lParam)
 {
-	UINT* color = reinterpret_cast<UINT*>(lParam);
+	BYTE* color = reinterpret_cast<BYTE*>(lParam);
 
 	if (color != nullptr)
 	{
