@@ -84,6 +84,25 @@ bool CSideControlWnd::GetMonitorsInfo()
 	return _monitorsCfg.size() > 0;
 }
 
+inline bool CSideControlWnd::GetUrl()
+{
+	NC_ADDRESS adr_str;
+	NET_ADDRESS_INFO_ ard_info;
+	adr_str.pAddrInfo = &ard_info;
+	if (FAILED(UrlField.GetAddress(&adr_str)))
+	{
+		UrlField.DisplayErrorTip();
+		return false;
+	}
+	UrlField.GetWindowTextW(_url);
+	if (_url.IsEmpty())
+	{
+		UrlField.DisplayErrorTip();
+		return false;
+	}
+	return true;
+}
+
 
 void CSideControlWnd::expand()
 {
@@ -112,30 +131,16 @@ void CSideControlWnd::toggleExpand()
 
 void CSideControlWnd::webViewConect()
 {
-	NC_ADDRESS adr_str;
-	NET_ADDRESS_INFO_ ard_info;
-	adr_str.pAddrInfo = &ard_info;
-	if (FAILED(UrlField.GetAddress(&adr_str)))
-	{
-		UrlField.DisplayErrorTip();
+	if (!GetUrl())
 		return;
-	}
-	UrlField.GetWindowTextW(_url);
 	_url = L"http://" + _url;
 	GetParent()->SendMessage(WM_MESSAGE_CONNECT, 0, reinterpret_cast<LPARAM>(_url.GetString()));
 }
 
 void CSideControlWnd::UDPConect()
 {
-	NC_ADDRESS adr_str;
-	NET_ADDRESS_INFO_ ard_info;
-	adr_str.pAddrInfo = &ard_info;
-	if (FAILED(UrlField.GetAddress(&adr_str)))
-	{
-		UrlField.DisplayErrorTip();
+	if (!GetUrl())
 		return;
-	}
-	UrlField.GetWindowTextW(_url);
 	_updControl.Stop();
 	_updControl.Start(this->GetSafeHwnd(), _monitorsCfg, _url);
 }

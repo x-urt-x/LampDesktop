@@ -28,6 +28,7 @@ private:
     bool GetMonitorsInfo();
     std::vector<MonitorCfg> _monitorsCfg;
     
+    bool GetUrl();
 
     UDPControl _updControl;
 
