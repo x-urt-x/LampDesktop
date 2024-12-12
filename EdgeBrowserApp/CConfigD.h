@@ -27,6 +27,8 @@ public:
 	CButton _isActive;
 	CEdit _br;
 	CEdit _rate;
+	CEdit _contrast;
+
 	virtual BOOL OnInitDialog();
 
 	afx_msg void OnBnClickedOk();

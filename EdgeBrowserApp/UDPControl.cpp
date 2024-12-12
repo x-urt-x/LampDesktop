@@ -100,11 +100,23 @@ void UDPControl::Process()
 			ZeroMemory(color, 3 * sizeof(UINT));
 			for (int i = 0; i < _colorProcesses.size(); i++)
 			{
-				float br = 255.0 / _cfgs[i]->getBr();
-				color[0] += _colorProcesses[i]->_color[0] * br;
-				color[1] += _colorProcesses[i]->_color[1] * br;
-				color[2] += _colorProcesses[i]->_color[2] * br;
+				BYTE newColor[3];
+				ZeroMemory(newColor, 3);
+				newColor[0] += _colorProcesses[i]->_color[0];
+				newColor[1] += _colorProcesses[i]->_color[1];
+				newColor[2] += _colorProcesses[i]->_color[2];
+
+				EnhanceContrast(newColor, _cfgs[i]->getContrast() / 25.0);
+				float br = _cfgs[i]->getBr() / 255.0;
+				color[0] *= br;
+				color[1] *= br;
+				color[2] *= br;
+
+				color[0] += newColor[0];
+				color[1] += newColor[1];
+				color[2] += newColor[2];
 			}
+
 			BYTE colorToSend[3];
 			colorToSend[0] = color[0] / _colorProcesses.size();
 			colorToSend[1] = color[1] / _colorProcesses.size();
@@ -121,4 +133,14 @@ void UDPControl::Process()
 		std::this_thread::sleep_for(time);
 	}
 	_stopFlag = false;
+}
+
+inline void UDPControl::EnhanceContrast(BYTE* color, float factor)
+{
+	float avgBrightness = (color[0] + color[1] + color[2]) / 3.0f;
+	for (int i = 0; i < 3; i++)
+	{
+		float newValue = avgBrightness + (color[i] - avgBrightness) * factor;
+		color[i] = (BYTE)newValue;
+	}
 }

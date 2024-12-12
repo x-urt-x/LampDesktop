@@ -1,6 +1,6 @@
 #include "MonitorCfg.h"
 
-MonitorCfg::MonitorCfg() : name(L"undef"), res(L"undef"), isActive(false), br(255), rate(10), id(0), delay(100)
+MonitorCfg::MonitorCfg() : name(L"undef"), res(L"undef"), isActive(false), br(255), rate(10), id(0), delay(100), contrast(50)
 {
 }
 
@@ -39,6 +39,12 @@ UINT8 MonitorCfg::getBr() const {
 	return br;
 }
 
+UINT8 MonitorCfg::getContrast() const
+{
+	//std::lock_guard<std::mutex> lock(*mtx.get());
+	return contrast;
+}
+
 UINT16 MonitorCfg::getRate() const {
 	//std::lock_guard<std::mutex> lock(*mtx.get());
 	return rate;
@@ -73,6 +79,12 @@ void MonitorCfg::setIsActive(bool newIsActive) {
 void MonitorCfg::setBr(UINT8 newBr) {
 	//std::lock_guard<std::mutex> lock(*mtx.get());
 	br = newBr;
+}
+
+void MonitorCfg::setContrast(UINT8 newContrast)
+{
+	//std::lock_guard<std::mutex> lock(*mtx.get());
+	contrast = newContrast;
 }
 
 void MonitorCfg::setRate(UINT16 newRate) {

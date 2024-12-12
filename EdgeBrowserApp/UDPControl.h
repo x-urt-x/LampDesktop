@@ -18,6 +18,7 @@ public:
 	void Stop();
 private:
 	void Process();
+	void EnhanceContrast(BYTE* color, float factor);
 	std::vector<MonitorCfg*> _cfgs;
 	std::vector<ColorProcess*> _colorProcesses;
 	bool _stopFlag;
